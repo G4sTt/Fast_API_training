@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Сервис с твоим FastAPI приложением
+  web:
+    build: .
+    container_name: fastapi_container
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app  # Синхронизация кода (чтобы не пересобирать при изменениях)
+    depends_on:
+      - db      # Ждём, пока поднимется база данных
+
+  # Сервис с базой данных PostgreSQL
+  db:
+    image: postgres:15
+    container_name: postgres_container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: myapp_db  # Вот твой dbname!
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
